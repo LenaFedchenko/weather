@@ -3,6 +3,10 @@ from PyQt6.QtCore import Qt
 from modules.app import app 
 import requests, os, json
 import dotenv
+from PIL import Image
+from PIL.ImageQt import ImageQt
+from PyQt6.QtGui import QPixmap,QImage
+
 
 
 class MainWindow(QMainWindow):
@@ -34,8 +38,33 @@ class MainWindow(QMainWindow):
         self.horizonal_layout = QHBoxLayout()
         self.frame_0.setLayout(self.horizonal_layout)
 
-        self.button = QPushButton(parent=self.frame_0)
-        self.button.clicked.connect(self.get_data)
+        # self.button = QPushButton(parent=self.frame_0)
+        # self.button.clicked.connect(self.get_data)
+
+        picture_path = os.path.join(__file__,"..","..","assets", "images","image.png")
+        picture_path = os.path.abspath(picture_path)
+        picture_path2 = os.path.join(__file__,"..","..","assets", "images","image2.png")
+        
+        picture_path2 = os.path.abspath(picture_path2)
+        # загружаем картинку в свойтсво self.image
+        self.image_pillow = Image.open(picture_path)
+        # переделіваем картинку в формат для работі с пайкт
+        self.qt_image = ImageQt(self.image_pillow)
+        # создаем пиксмап и в него помещаем картинку
+        self.pixmap = QPixmap(QImage(self.qt_image))
+        self.pixmap.scaled(200, 200)
+        self.label = QLabel(parent=self.frame_0)
+        # прикрепляем картинку в лейбл
+        self.label.setPixmap(self.pixmap)
+        self.horizonal_layout.addWidget(self.label)
+
+
+        self.pixmap2 = QPixmap(picture_path2)
+        self.pixmap2.scaled(200, 200)
+        self.label2 = QLabel(parent=self.frame_0)
+        self.label2.setPixmap(self.pixmap2)
+        self.horizonal_layout.addWidget(self.label2)
+
     
     def get_data(self):
         # загружаем файл дотенв
